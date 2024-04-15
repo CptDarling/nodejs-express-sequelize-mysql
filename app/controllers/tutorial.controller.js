@@ -4,7 +4,32 @@ const Op = db.Sequelize.Op
 
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
+  // validate request
+  if (!req.body.title) {
+    res.status(400).send({
+      message: "Content cannot be empty!"
+    })
+    return
+  }
 
+  // create a Tutorial
+  const tutorial = {
+    title: req.body.title,
+    description: req.body.description,
+    published: req.body.published ? req.body.published : false
+  }
+
+  // save Tutorial in the database
+  Tutorial.create(tutorial)
+  .then(data => {
+    res.send(data)
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving tutorials."
+    })
+  })
 }
 
 // Retrieve all Tutorials from the database.
